@@ -1,8 +1,8 @@
 import {
-  randomBytes,
   createCipheriv,
   createDecipheriv,
   pbkdf2Sync,
+  randomBytes,
 } from 'crypto';
 
 const iterations = 320000;
@@ -30,33 +30,59 @@ interface encryptedData {
  * @returns The encryption object
  */
 function initialize(keyphrase: string): encryption {
-  var saltKEK = randomBytes(saltLength).toString('hex');
+  var kekSalt = randomBytes(saltLength).toString('hex');
 
-  var KEK = pbkdf2Sync(keyphrase, saltKEK, iterations, keyLength, 'sha512');
+  var KEK = pbkdf2Sync(keyphrase, kekSalt, iterations, keyLength, 'sha512');
   var DEK = randomBytes(keyLength);
   var dekIv = randomBytes(ivLength).toString('hex');
 
-  var encrypted = _encrypt(DEK, KEK, dekIv);
+  var encryptedDEK = _encrypt(DEK, KEK, dekIv);
 
   DEK.fill(0);
 
   return {
-    wrappedDEK: encrypted.data,
+    wrappedDEK: encryptedDEK.data,
     dekIv: dekIv,
-    dekAuthTag: encrypted.authTag,
+    dekAuthTag: encryptedDEK.authTag,
     KEK: KEK.toString('hex'),
-    kekSalt: saltKEK,
+    kekSalt: kekSalt,
+  };
+}
+
+function changeKeyphrase(
+  oldKeyphrase: string,
+  newKeyphrase: string,
+  wrappedDEK: string,
+  dekIv: string,
+  dekAuthTag: string,
+  kekSalt: string
+): encryption {
+  var newKekSalt = randomBytes(saltLength).toString('hex');
+  var bufferOldKEK = Buffer.from(generateKey(oldKeyphrase, kekSalt), 'hex');
+  var bufferNewKEK = Buffer.from(generateKey(newKeyphrase, newKekSalt), 'hex');
+
+  var DEK = _decrypt(wrappedDEK, bufferOldKEK, dekIv, dekAuthTag);
+  var encryptedDEK = _encrypt(DEK, bufferNewKEK, dekIv);
+
+  DEK.fill(0);
+
+  return {
+    wrappedDEK: encryptedDEK.data,
+    dekIv: dekIv,
+    dekAuthTag: encryptedDEK.authTag,
+    KEK: bufferNewKEK.toString('hex'),
+    kekSalt: newKekSalt,
   };
 }
 
 /**
  * Generate the Key Encryption Key (KEK) from the keyphrase.
  * @param keyphrase The keyphrase used to initialize the encryption
- * @param saltKEK The salt used to generate the key encryption key
+ * @param kekSalt The salt used to generate the key encryption key
  * @returns The key encryption key
  */
-function generateKey(keyphrase: string, saltKEK: string): string {
-  const KEK = pbkdf2Sync(keyphrase, saltKEK, iterations, keyLength, 'sha512');
+function generateKey(keyphrase: string, kekSalt: string): string {
+  const KEK = pbkdf2Sync(keyphrase, kekSalt, iterations, keyLength, 'sha512');
   return KEK.toString('hex');
 }
 
@@ -149,4 +175,4 @@ function _decrypt(
   return decrypted;
 }
 
-export { initialize, generateKey, encryptData, decryptData };
+export { initialize, changeKeyphrase, generateKey, encryptData, decryptData };
