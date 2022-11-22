@@ -11,12 +11,12 @@ test('initialize', () => {
   expect(encryption.dekIv).toBeDefined();
   expect(encryption.dekAuthTag).toBeDefined();
   expect(encryption.KEK).toBeDefined();
-  expect(encryption.saltKEK).toBeDefined();
+  expect(encryption.kekSalt).toBeDefined();
 });
 
 test('get kek', () => {
   const encryption = initialize('test');
-  const KEK = generateKey('test', encryption.saltKEK);
+  const KEK = generateKey('test', encryption.kekSalt);
   expect(KEK).toBe(encryption.KEK);
 });
 

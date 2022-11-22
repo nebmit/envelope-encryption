@@ -15,7 +15,7 @@ interface encryption {
   dekIv: string;
   dekAuthTag: string;
   KEK: string;
-  saltKEK: string;
+  kekSalt: string;
 }
 
 interface encryptedData {
@@ -45,7 +45,7 @@ function initialize(keyphrase: string): encryption {
     dekIv: dekIv,
     dekAuthTag: encrypted.authTag,
     KEK: KEK.toString('hex'),
-    saltKEK: saltKEK,
+    kekSalt: saltKEK,
   };
 }
 
