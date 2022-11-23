@@ -1,9 +1,9 @@
 import {
+  changeKeyphrase,
   decryptData,
   encryptData,
   generateKey,
   initialize,
-  changeKeyphrase,
 } from '../src/index';
 
 test('initialize', () => {
@@ -77,14 +77,12 @@ test('change keyphrase', () => {
     encryption.dekAuthTag,
     encryption.KEK
   );
-
   const newEncryption = changeKeyphrase(
-    'test',
-    'test2',
     encryption.wrappedDEK,
     encryption.dekIv,
     encryption.dekAuthTag,
-    encryption.kekSalt
+    encryption.KEK,
+    'test2'
   );
   expect(newEncryption.wrappedDEK).toBeDefined();
   expect(newEncryption.dekIv).toBeDefined();

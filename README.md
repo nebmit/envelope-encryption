@@ -1,7 +1,39 @@
-# Envelope Encryption
+# Node.js - Envelope Encryption
 
-Simple native implementation of envelope encryption to increase ease of use for encrypting user data.
+Simple native implementation of envelope encryption to increase ease of use of encryption in your application.
 
+Supplies a **simple** mode to massively simplify the process
+
+# Table of Contents
+* [Simple Mode](#simple-mode-example)
+* [Express Example](#express-example-authentication)
+
+## Simple mode example:
+
+```typescript
+import { simple as envelope } from 'envelope-encryption';
+
+var myKeyphrase = 'secret';
+var myData = 'my data';
+
+// This will return an object { dek: string, salt: string }
+// Store these somewhere safe, next to the hashed keyphrase for example
+const encryption = envelope.initialize(myKeyphrase);
+
+var dek = encryption.dek;
+var salt = encryption.salt;
+
+// Generate the KEK from the keyphrase and salt
+const kek = envelope.generateKey(myKeyphrase, salt);
+
+// Encrypt the data
+const encrypted = envelope.encrypt(myData, kek);
+
+// ... do something with the encrypted data ...
+
+// Decrypt the data at a later date
+const decrypted = envelope.decrypt(encrypted, kek);
+```
 
 ## Express example authentication:
 
@@ -75,7 +107,7 @@ import { decryptData } from 'envelope-encryption';
 var key = req.session.key;
 
 // Get the user's information from wherever you store it
-var user = JSON.parse(fs.readFileSync('data.json'));
+var user = JSON.parse(fs.readFileSync('user.json'));
 // Get the encrypted data from wherever you store it
 var encrypted = JSON.parse(fs.readFileSync('data.json'));
 
