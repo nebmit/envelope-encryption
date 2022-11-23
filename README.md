@@ -1,5 +1,8 @@
 # Node.js - Envelope Encryption
 
+[![CI](https://github.com/nebmit/envelope-encryption/actions/workflows/main.yml/badge.svg)](https://github.com/nebmit/envelope-encryption/actions/workflows/main.yml)
+[![size](https://github.com/nebmit/envelope-encryption/actions/workflows/size.yml/badge.svg)](https://github.com/nebmit/envelope-encryption/actions/workflows/size.yml)
+
 Simple native implementation of envelope encryption to increase ease of use of encryption in your application.
 
 Supplies a **simple** mode to massively simplify the process
