@@ -7,11 +7,18 @@ Simple native implementation of envelope encryption to increase ease of use of e
 
 Supplies a **simple** mode to massively simplify the process
 
-# Table of Contents
 * [Simple Mode](#simple-mode-example)
 * [Express Example](#express-example-authentication)
 
-## Simple mode example:
+
+## Installation
+
+```bash
+npm install envelope-encryption
+```
+
+
+# Simple mode example:
 
 ```typescript
 import { simple as envelope } from 'envelope-encryption';
@@ -38,7 +45,7 @@ const encrypted = envelope.encrypt(myData, kek);
 const decrypted = envelope.decrypt(encrypted, kek);
 ```
 
-## Express example authentication:
+# Express example authentication:
 
 
 **On Sign-Up**
