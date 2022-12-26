@@ -8,7 +8,7 @@ Simple native implementation of envelope encryption to increase ease of use of e
 Supplies a **simple** mode to massively simplify the process
 
 * [Simple Mode](#simple-mode-example)
-* [Express Example](#express-example-authentication)
+* [Example Application](#express-example-authentication)
 
 
 ## Installation
@@ -33,16 +33,18 @@ const encryption = envelope.initialize(myKeyphrase);
 var dek = encryption.dek;
 var salt = encryption.salt;
 
-// Generate the KEK from the keyphrase and salt
+// Generate the KEK from the keyphrase and salt. 
+// This has to be done every time you want to encrypt/decrypt data. 
+// Do not store this in any persistent storage. This is effectively the password.
 const kek = envelope.generateKey(myKeyphrase, salt);
 
 // Encrypt the data
-const encrypted = envelope.encrypt(myData, kek);
+const encrypted = envelope.encrypt(dek, kek, myData);
 
 // ... do something with the encrypted data ...
 
 // Decrypt the data at a later date
-const decrypted = envelope.decrypt(encrypted, kek);
+const decrypted = envelope.decrypt(dek, kek, encrypted);
 ```
 
 # Express example authentication:
