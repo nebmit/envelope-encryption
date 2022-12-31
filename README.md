@@ -39,12 +39,12 @@ var salt = encryption.salt;
 const kek = envelope.generateKey(myKeyphrase, salt);
 
 // Encrypt the data
-const encrypted = envelope.encrypt(dek, kek, myData);
+const encrypted = envelope.encryptData(dek, kek, myData);
 
 // ... do something with the encrypted data ...
 
 // Decrypt the data at a later date
-const decrypted = envelope.decrypt(dek, kek, encrypted);
+const decrypted = envelope.decryptData(dek, kek, encrypted);
 ```
 
 # Express example authentication:
